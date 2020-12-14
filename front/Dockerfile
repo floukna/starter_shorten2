@@ -1,8 +1,8 @@
 FROM node:14.4.0-alpine
 
-WORKDIR /home/app/client
+WORKDIR /home/app/front
 
-ENV PATH /home/app/client/node_modules/.bin:$PATH
+ENV PATH /home/app/front/node_modules/.bin:$PATH
 
 COPY package*.json ./
 RUN npm install
