@@ -1,0 +1,64 @@
+version: "3"
+services:
+  client_dev:
+    build: ./client
+    command: sh -c "npm run start"
+    ports:
+      - 1000:3000
+    volumes:
+      - ./client:/home/app/client
+      - /home/app/client/node_modules
+    working_dir: /home/app/client
+    environment:
+      REACT_API_URL: http://localhost:3001/v1
+  api_dev:
+    build: ./api
+    command: sh -c "yarn db-migrate && yarn run-dev"
+    environment:
+      DB_USER: admin
+      DB_PASSWORD: password
+      DB_NAME: shorten-dev
+      DB_HOST: shorten-db
+      DB_PORT: 5432
+      # NODE_ENV: production
+      CLIENT_URL: http://localhost:1000
+      DB_URL: postgres://admin:password@shorten-db:5432/shorten-dev
+    ports:
+      - 3001:3001
+    volumes:
+      - ./api:/home/app/api
+      - /home/app/api/node_modules
+    working_dir: /home/app/api
+    restart: on-failure
+    depends_on:
+      - shorten-db
+  shorten-db:
+    image: postgres:12.3-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: shorten-dev
+    volumes:
+      - datastore_sqldb_data:/var/lib/postgresql/data
+      - ./docker/sqldb/assets:/docker-entrypoint-initdb.d:ro
+  shorten-db-gui:
+    image: dpage/pgadmin4:4.22
+    restart: always
+    depends_on:
+      - shorten-db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: test@mail.com
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports:
+      - "4000:80"
+    volumes:
+      - datastore_sqldb-admin_data:/var/lib/pgadmin
+      - ./docker/sqldb-admin/config/servers.json:/pgadmin4/servers.json:ro
+volumes:
+  datastore_sqldb_data:
+  datastore_sqldb-admin_data:
