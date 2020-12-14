@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
       return res.status(500).json('Internal Server error ' + err.message);
     }
   } else {
-    res.status(400).json('Invalid URL. Please enter a vlaid url for shortening.');
+    res.status(400).json('Invalid URL. Please enter a valid url for shortening.');
   }
 });
 

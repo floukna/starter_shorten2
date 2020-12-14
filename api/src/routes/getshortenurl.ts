@@ -32,9 +32,9 @@ router.get('/:shortUrl', async (req, res) => {
       }
       //   clickCount++;
       //   await url.update({ clickCount });
-      return res.redirect(url.longURL);
+      return res.send(url.longURL);
     } else {
-      return res.redirect(process.env.CLIENT_URL);
+      return res.send(process.env.CLIENT_URL);
     }
   } catch (err) {
     console.error('Error while retrieving long url for shorturlcode ' + shortUrlCode);

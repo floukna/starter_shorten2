@@ -1,14 +1,14 @@
 version: "3"
 services:
-  client_dev:
-    build: ./client
+  front_dev:
+    build: ./front
     command: sh -c "npm run start"
     ports:
       - 1000:3000
     volumes:
-      - ./client:/home/app/client
-      - /home/app/client/node_modules
-    working_dir: /home/app/client
+      - ./front:/home/app/front
+      - /home/app/front/node_modules
+    working_dir: /home/app/front
     environment:
       REACT_API_URL: http://localhost:3001/v1
   api_dev:
